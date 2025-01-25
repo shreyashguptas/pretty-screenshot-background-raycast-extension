@@ -1,8 +1,9 @@
-import { Detail, ActionPanel, Action, Icon, Color } from "@raycast/api";
+import { Detail, ActionPanel, Action, Icon } from "@raycast/api";
 import { useEffect, useState } from "react";
 import { watchScreenshots } from "./utils/screenshot-watcher";
 import { beautifyScreenshot } from "./utils/image-processor";
 
+// React is automatically available in Raycast extensions
 export default function Command() {
   const [latestScreenshot, setLatestScreenshot] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -32,7 +33,7 @@ Take a screenshot using Command+Shift+4 to begin."
     <Detail
       markdown={`# Beautify Screenshot
       
-![Screenshot Preview](${latestScreenshot})
+![Screenshot Preview](file://${latestScreenshot})
 
 Choose a background color to enhance your screenshot.`}
       actions={
@@ -40,12 +41,20 @@ Choose a background color to enhance your screenshot.`}
           <Action
             title="Apply Blue Background"
             icon={Icon.Circle}
-            onAction={() => beautifyScreenshot(latestScreenshot, "#0066FF")}
+            onAction={async () => {
+              setIsProcessing(true);
+              await beautifyScreenshot(latestScreenshot, "#0066FF");
+              setIsProcessing(false);
+            }}
           />
           <Action
             title="Apply Red Background"
             icon={Icon.Circle}
-            onAction={() => beautifyScreenshot(latestScreenshot, "#FF0000")}
+            onAction={async () => {
+              setIsProcessing(true);
+              await beautifyScreenshot(latestScreenshot, "#FF0000");
+              setIsProcessing(false);
+            }}
           />
           {/* Add more color options */}
         </ActionPanel>
